@@ -6,10 +6,12 @@
  */
 let font
 let instructions
+let file
 
 
 function preload() {
     font = loadFont('data/consola.ttf')
+    file = loadStrings('MemoryAccess/BasicTest/BasicTest.vm')
 }
 
 
@@ -24,6 +26,10 @@ function setup() {
     instructions.html(`<pre>
         [1,2,3,4,5] → no function
         z → freeze sketch</pre>`)
+
+    for (let line of file) {
+        console.log(line)
+    }
 }
 
 
