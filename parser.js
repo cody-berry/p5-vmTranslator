@@ -6,7 +6,7 @@
 class Parser {
     constructor(fileStrings) {
         this.file = fileStrings
-        this.lineNumber = 'start'
+        this.lineNumber = 0
         this.currentLine = ' '
     }
 
@@ -23,20 +23,17 @@ class Parser {
     // let's advance our line and parse our line!
     advance() {
         if (this.hasMoreCommands()) {
-            if (this.lineNumber !== 'start') {
-                this.lineNumber++
-            } else {
-                this.lineNumber = 0
-            }
             this.currentLine = trim(this.file[this.lineNumber])
             let comment = this.currentLine.indexOf('//')
             if (comment !== -1) {
                 this.currentLine = this.currentLine.substring(0, comment)
             }
+            this.lineNumber++
             // only execute the command if this is not whitespace.
             if (this.currentLine.length > 1) {
-                let words = this.currentLine.split(' ')
-                return words
+                return this.currentLine.split(' ')
+            } else {
+                return []
             }
         } else {
             this.lineNumber = 'end'

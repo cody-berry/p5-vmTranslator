@@ -25,11 +25,12 @@ let font
 let instructions
 let file
 let parser
+let codewriter
 
 
 function preload() {
     font = loadFont('data/consola.ttf')
-    file = loadStrings('StackArithmetic/SimpleAdd/SimpleAdd.vm')
+    file = loadStrings('StackArithmetic/StackTest/StackTest.vm')
 }
 
 
@@ -47,13 +48,24 @@ function setup() {
 
 
     // a parser. we'll need it later.
-    let parser = new Parser(file)
+    parser = new Parser(file)
 
-    console.log(parser)
+    // a code writer.
+    codewriter = new CodeWriter()
 
 
     for (let line of file) {
-        parser.advance()
+        console.log(parser.lineNumber)
+        let words = parser.advance()
+        console.log(words)
+        if (words.length === 1) {
+            let arithmetic = codewriter.writeArithmetic(words[0])
+            if (arithmetic) {
+                for (let code of arithmetic) {
+                    console.log(code)
+                }
+            }
+        }
     }
 }
 
