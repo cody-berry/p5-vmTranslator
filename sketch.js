@@ -29,7 +29,7 @@ let parser
 
 function preload() {
     font = loadFont('data/consola.ttf')
-    file = loadStrings('MemoryAccess/BasicTest/BasicTest.vm')
+    file = loadStrings('StackArithmetic/SimpleAdd/SimpleAdd.vm')
 }
 
 
@@ -54,7 +54,6 @@ function setup() {
 
     for (let line of file) {
         parser.advance()
-        console.log(parser.currentLine)
     }
 }
 

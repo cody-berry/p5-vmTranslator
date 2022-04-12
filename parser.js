@@ -28,7 +28,18 @@ class Parser {
             } else {
                 this.lineNumber = 0
             }
-            this.currentLine = this.file[this.lineNumber]
+            this.currentLine = trim(this.file[this.lineNumber])
+            let comment = this.currentLine.indexOf('//')
+            if (comment !== -1) {
+                this.currentLine = this.currentLine.substring(0, comment)
+            }
+            // only execute the command if this is not whitespace.
+            if (this.currentLine.length > 1) {
+                let words = this.currentLine.split(' ')
+                return words
+            }
+        } else {
+            this.lineNumber = 'end'
         }
     }
 }
