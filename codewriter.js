@@ -2,7 +2,11 @@
 // writes the code for certain instructions
 class CodeWriter {
     // all we need to do is to write commands!
-    constructor() {}
+    constructor() {
+        // we're going to use labels, but hey are the same name, so we need
+        // a counter.
+        this.labelNumber = 0
+    }
 
 
     // write an arithmetic command
@@ -18,7 +22,12 @@ class CodeWriter {
         }
         // translates less/greater than or equal to commands
         if (command === 'lt' || command === 'gt' || command === 'eq') {
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M", "D;J" + command.toUpperCase()]
+            this.labelNumber++
+            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M",
+                "@TRUE" + this.labelNumber, "D;J" + command.toUpperCase(),
+                "@0", "M=M-1", "A=M", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "M=1",
+                "(STOP" + this.labelNumber + ")"]
         }
     }
 }
