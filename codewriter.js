@@ -26,7 +26,7 @@ class CodeWriter {
             return ["@0", "A=M", "D=M", "A=A-1", "D=D-M",
                 "@TRUE" + this.labelNumber, "D;J" + command.toUpperCase(),
                 "@0", "M=M-1", "A=M", "M=0", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "M=1",
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "M=M-1", "A=M", "M=1",
                 "(STOP" + this.labelNumber + ")"]
         }
         // translates 'and' commands
@@ -37,6 +37,16 @@ class CodeWriter {
         if (command === 'or') {
             return ["@0", "A=M", "D=M", "A=A-1", "M=D|M", "@0", "M=M-1"]
         }
+        // translates 'not' commands
+        if (command === 'not') {
+            this.labelNumber++
+            return ["@0", "A=M", "D=M-1", "@TRUE" + this.labelNumber, "D;JEQ",
+            "@0", "A=M", "M=0", "@STOP" + this.labelNumber, "D;JMP",
+            "(TRUE" + this.labelNumber + ")", "@0", "A=M", "M=1", "(STOP" + this.labelNumber + ")"]
+        }
     }
+
+
+    //
 }
 
