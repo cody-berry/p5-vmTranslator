@@ -29,6 +29,14 @@ class CodeWriter {
                 "0;JMP", "(TRUE" + this.labelNumber + ")", "M=1",
                 "(STOP" + this.labelNumber + ")"]
         }
+        // translates 'and' commands
+        if (command === 'and') {
+            return ["@0", "A=M", "D=M", "A=A-1", "M=D&M", "@0", "M=M-1"]
+        }
+        // translates 'or' commands
+        if (command === 'or') {
+            return ["@0", "A=M", "D=M", "A=A-1", "M=D|M", "@0", "M=M-1"]
+        }
     }
 }
 
