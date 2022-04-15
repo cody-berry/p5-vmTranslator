@@ -55,13 +55,18 @@ function setup() {
 
 
     for (let line of file) {
-        console.log(parser.lineNumber)
+        // console.log(parser.lineNumber)
         let words = parser.advance()
-        console.log(words)
+        // console.log(words)
         if (words.length === 1) {
             let arithmetic = codewriter.writeArithmetic(words[0])
-            if (arithmetic) {
-                for (let code of arithmetic) {
+            for (let code of arithmetic) {
+                console.log(code)
+            }
+        } if (words.length === 3) {
+            let pushPop = codewriter.writePushPop(words[0], words[1], words[2])
+            if (pushPop) {
+                for (let code of pushPop) {
                     console.log(code)
                 }
             }
