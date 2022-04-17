@@ -14,42 +14,42 @@ class CodeWriter {
         // writes add commands. takes the last two stack positions using
         // StackPointer and adds them.
         if (command === 'add') {
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D+M", "M=D", "@0", "M=M-1"]
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D+M", "M=D"]
         }
         // does the same except it subtracts
         if (command === 'sub') {
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M", "M=D", "@0", "M=M-1"]
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=M-D", "M=D"]
         }
         // translates less/greater than or equal to commands
         if (command === 'lt') {
             this.labelNumber++
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M",
-                "@TRUE" + this.labelNumber, "D;JLT",
-                "@0", "M=M-1", "A=M", "M=-1", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "M=M-1", "A=M", "M=0",
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
+                "@TRUE" + this.labelNumber, "D;JGT",
+                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         } if (command === 'gt') {
             this.labelNumber++
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M",
-                "@TRUE" + this.labelNumber, "D;JGT",
-                "@0", "M=M-1", "A=M", "M=-1", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "M=M-1", "A=M", "M=0",
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
+                "@TRUE" + this.labelNumber, "D;JLT",
+                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         } if (command === 'eq') {
             this.labelNumber++
-            return ["@0", "A=M", "D=M", "A=A-1", "D=D-M",
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
                 "@TRUE" + this.labelNumber, "D;JEQ",
-                "@0", "M=M-1", "A=M", "M=-1", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "M=M-1", "A=M", "M=0",
+                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         }
         // translates 'and' commands
         if (command === 'and') {
-            return ["@0", "A=M", "D=M", "A=A-1", "M=D&M", "@0", "M=M-1"]
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "M=D&M"]
         }
         // translates 'or' commands
         if (command === 'or') {
-            return ["@0", "A=M", "D=M", "A=A-1", "M=D|M", "@0", "M=M-1"]
+            return ["@0", "AM=M-1", "D=M", "A=A-1", "M=D|M"]
         }
         // translates 'not' commands
         if (command === 'not') {
@@ -86,7 +86,8 @@ class CodeWriter {
                 result = ["@" + index + "A", "D=M"] // D={variable at static i}
             }
             result.push("@0")
-            result.push("AM=M+1")
+            result.push("M=M+1")
+            result.push("A=M-1")
             result.push("M=D")
         }
         if (pushOrPop === 'pop') {

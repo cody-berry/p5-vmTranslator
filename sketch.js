@@ -58,12 +58,15 @@ function setup() {
         // console.log(parser.lineNumber)
         let words = parser.advance()
         // console.log(words)
+
         if (words.length === 1) {
+            console.log("// " + line)
             let arithmetic = codewriter.writeArithmetic(words[0])
             for (let code of arithmetic) {
                 console.log(code)
             }
         } if (words.length === 3) {
+            console.log("// " + line)
             let pushPop = codewriter.writePushPop(words[0], words[1], words[2])
             if (pushPop) {
                 for (let code of pushPop) {
@@ -72,6 +75,8 @@ function setup() {
             }
         }
     }
+
+    noLoop()
 }
 
 
