@@ -54,11 +54,11 @@ class CodeWriter {
         // translates 'not' commands
         if (command === 'not') {
             this.labelNumber++
-            return ["@0", "A=M", "M=!M"]
+            return ["@0", "A=M-1", "M=!M"]
         }
         // translates 'neg' commands
         if (command === 'neg') {
-            return ['@0', 'A=M', 'M=-M']
+            return ['@0', 'A=M-1', 'M=-M']
         }
     }
 

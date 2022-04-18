@@ -330,7 +330,7 @@ D=M-D
 M=D
 // neg
 @0
-A=M
+A=M-1
 M=-M
 // and
 @0
@@ -353,5 +353,5 @@ A=A-1
 M=D|M
 // not
 @0
-A=M
+A=M-1
 M=!M
