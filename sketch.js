@@ -30,7 +30,7 @@ let codewriter
 
 function preload() {
     font = loadFont('data/consola.ttf')
-    file = loadStrings('StackArithmetic/StackTest/StackTest.vm')
+    file = loadStrings('MemoryAccess/BasicTest/BasicTest.vm')
 }
 
 
@@ -67,7 +67,7 @@ function setup() {
             }
         } if (words.length === 3) {
             console.log("// " + line)
-            let pushPop = codewriter.writePushPop(words[0], words[1], words[2])
+            let pushPop = codewriter.writePushPop(words[0], words[1], int(words[2]))
             if (pushPop) {
                 for (let code of pushPop) {
                     console.log(code)

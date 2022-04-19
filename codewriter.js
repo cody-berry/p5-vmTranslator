@@ -14,51 +14,51 @@ class CodeWriter {
         // writes add commands. takes the last two stack positions using
         // StackPointer and adds them.
         if (command === 'add') {
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D+M", "M=D"]
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "D=D+M", "M=D"]
         }
         // does the same except it subtracts
         if (command === 'sub') {
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=M-D", "M=D"]
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "D=M-D", "M=D"]
         }
         // translates less/greater than or equal to commands
         if (command === 'lt') {
             this.labelNumber++
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "D=D-M",
                 "@TRUE" + this.labelNumber, "D;JGT",
-                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
+                "@SP", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@SP", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         } if (command === 'gt') {
             this.labelNumber++
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "D=D-M",
                 "@TRUE" + this.labelNumber, "D;JLT",
-                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
+                "@SP", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@SP", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         } if (command === 'eq') {
             this.labelNumber++
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "D=D-M",
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "D=D-M",
                 "@TRUE" + this.labelNumber, "D;JEQ",
-                "@0", "A=M-1", "M=0", "@STOP" + this.labelNumber,
-                "0;JMP", "(TRUE" + this.labelNumber + ")", "@0", "A=M-1", "M=-1",
+                "@SP", "A=M-1", "M=0", "@STOP" + this.labelNumber,
+                "0;JMP", "(TRUE" + this.labelNumber + ")", "@SP", "A=M-1", "M=-1",
                 "(STOP" + this.labelNumber + ")"]
         }
         // translates 'and' commands
         if (command === 'and') {
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "M=D&M"]
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "M=D&M"]
         }
         // translates 'or' commands
         if (command === 'or') {
-            return ["@0", "AM=M-1", "D=M", "A=A-1", "M=D|M"]
+            return ["@SP", "AM=M-1", "D=M", "A=A-1", "M=D|M"]
         }
         // translates 'not' commands
         if (command === 'not') {
             this.labelNumber++
-            return ["@0", "A=M-1", "M=!M"]
+            return ["@SP", "A=M-1", "M=!M"]
         }
         // translates 'neg' commands
         if (command === 'neg') {
-            return ['@0', 'A=M-1', 'M=-M']
+            return ['@SP', 'A=M-1', 'M=-M']
         }
     }
 
@@ -85,13 +85,30 @@ class CodeWriter {
             } if (segment === 'static') { // push static i
                 result = ["@" + index + "A", "D=M"] // D={variable at static i}
             }
-            result.push("@0")
+            result.push("@SP")
             result.push("M=M+1")
             result.push("A=M-1")
             result.push("M=D")
         }
         if (pushOrPop === 'pop') {
-
+            result = []
+            if (segment === 'local') { // pop local i
+                result.push("@" + index, "D=A", "@LCL", "A=D+M", "D=A", "@adlocal" + index, "M=D", "@0", "AM=M-1", "D=M", "@adlocal" + index, "A=M", "M=D") // RAM[LCL+i]=D
+            } if (segment === 'argument') { // pop argument i
+                result.push("@" + index, "D=A", "@ARG", "A=D+M", "D=A", "@adarg" + index, "M=D", "@0", "AM=M-1", "D=M", "@adarg" + index, "A=M", "M=D") // RAM[ARG+i]=D
+            } if (segment === 'this') { // pop this i
+                result.push("@" + index, "D=A", "@THIS", "A=D+M", "D=A", "@adthis" + index, "M=D", "@0", "AM=M-1", "D=M", "@adthis" + index, "A=M", "M=D") // RAM[THIS+i]=D
+            } if (segment === 'that') { // pop that i
+                result.push("@" + index, "D=A", "@THAT", "A=D+M", "D=A", "@adthat" + index, "M=D", "@0", "AM=M-1", "D=M", "@adthat" + index, "A=M", "M=D") // RAM[THAT+i]=D
+            } if (segment === 'pointer') { // pop pointer i
+                result.push("@0", "A=M", "D=M", "@" + (3+index), "M=D") // THIS/THAT=D
+            } if (segment === 'temp') { // pop temp i
+                result.push("@0", "A=M", "D=M", "@" + (5+index), "M=D") // RAM[5+i]=D
+            } if (segment === 'static') { // pop static i
+                result.push("@0", "A=M", "D=M", "@" + index + "A", "M=D") // {variable at
+                // static
+                // i} = D
+            }
         }
         return result
     }
