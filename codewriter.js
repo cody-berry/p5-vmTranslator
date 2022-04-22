@@ -93,19 +93,19 @@ class CodeWriter {
         if (pushOrPop === 'pop') {
             result = []
             if (segment === 'local') { // pop local i
-                result.push("@" + index, "D=A", "@LCL", "A=D+M", "D=A", "@adlocal" + index, "M=D", "@0", "AM=M-1", "D=M", "@adlocal" + index, "A=M", "M=D") // RAM[LCL+i]=D
+                result.push("@" + index, "D=A", "@LCL", "D=D+M", "@ad", "M=D", "@SP", "AM=M-1", "D=M", "@ad", "A=M", "M=D") // RAM[LCL+i]=D
             } if (segment === 'argument') { // pop argument i
-                result.push("@" + index, "D=A", "@ARG", "A=D+M", "D=A", "@adarg" + index, "M=D", "@0", "AM=M-1", "D=M", "@adarg" + index, "A=M", "M=D") // RAM[ARG+i]=D
+                result.push("@" + index, "D=A", "@ARG", "D=D+M", "@ad", "M=D", "@SP", "AM=M-1", "D=M", "@ad", "A=M", "M=D") // RAM[ARG+i]=D
             } if (segment === 'this') { // pop this i
-                result.push("@" + index, "D=A", "@THIS", "A=D+M", "D=A", "@adthis" + index, "M=D", "@0", "AM=M-1", "D=M", "@adthis" + index, "A=M", "M=D") // RAM[THIS+i]=D
+                result.push("@" + index, "D=A", "@THIS", "D=D+M", "@ad", "M=D", "@SP", "AM=M-1", "D=M", "@ad", "A=M", "M=D") // RAM[THIS+i]=D
             } if (segment === 'that') { // pop that i
-                result.push("@" + index, "D=A", "@THAT", "A=D+M", "D=A", "@adthat" + index, "M=D", "@0", "AM=M-1", "D=M", "@adthat" + index, "A=M", "M=D") // RAM[THAT+i]=D
+                result.push("@" + index, "D=A", "@THAT", "D=D+M", "@ad", "M=D", "@SP", "AM=M-1", "D=M", "@ad", "A=M", "M=D") // RAM[THAT+i]=D
             } if (segment === 'pointer') { // pop pointer i
-                result.push("@0", "A=M", "D=M", "@" + (3+index), "M=D") // THIS/THAT=D
+                result.push("@SP", "AM=M-1", "D=M", "@" + (3+index), "M=D") // THIS/THAT=D
             } if (segment === 'temp') { // pop temp i
-                result.push("@0", "A=M", "D=M", "@" + (5+index), "M=D") // RAM[5+i]=D
+                result.push("@SP", "AM=M-1", "D=M", "@" + (5+index), "M=D") // RAM[5+i]=D
             } if (segment === 'static') { // pop static i
-                result.push("@0", "A=M", "D=M", "@" + index + "A", "M=D") // {variable at
+                result.push("@SP", "AM=M-1", "D=M", "@" + index + "A", "M=D") // {variable at
                 // static
                 // i} = D
             }
