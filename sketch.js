@@ -30,7 +30,7 @@ let codewriter
 
 function preload() {
     font = loadFont('data/consola.ttf')
-    file = loadStrings('MemoryAccess/BasicTest/BasicTest.vm')
+    file = loadStrings('MemoryAccess/StaticTest/StaticTest.vm')
 }
 
 
