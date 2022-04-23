@@ -71,13 +71,13 @@ class CodeWriter {
             if (segment === 'constant') { // push constant i
                 result = ["@" + index, "D=A"] // D=i
             } if (segment === 'local') { // push local i
-                result = ["@" + index, "D=A", "@LCL", "A=D+A", "D=M"] // D=RAM[LCL+i]
+                result = ["@" + index, "D=A", "@LCL", "A=D+M", "D=M"] // D=RAM[LCL+i]
             } if (segment === 'argument') { // push argument i
-                result = ["@" + index, "D=A", "@ARG", "A=D+A", "D=M"] // D=RAM[ARG+i]
+                result = ["@" + index, "D=A", "@ARG", "A=D+M", "D=M"] // D=RAM[ARG+i]
             } if (segment === 'this') { // push this i
-                result = ["@" + index, "D=A", "@THIS", "A=D+A", "D=M"] // D=RAM[THIS+i]
+                result = ["@" + index, "D=A", "@THIS", "A=D+M", "D=M"] // D=RAM[THIS+i]
             } if (segment === 'that') { // push that i
-                result = ["@" + index, "D=A", "@THAT", "A=D+A", "D=M"] // D=RAM[THAT+i]
+                result = ["@" + index, "D=A", "@THAT", "A=D+M", "D=M"] // D=RAM[THAT+i]
             } if (segment === 'pointer') { // push pointer i
                 result = ["@" + (3+index), "D=M"] // D=THIS/THAT
             } if (segment === 'temp') { // push temp i
